@@ -11,6 +11,7 @@ from .utils import create_code_file, execute_file
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 import multiprocessing as mp
+from PIL import Image
 
 
 def hello_world(request):
@@ -73,3 +74,17 @@ class SubmissionsViewSet(ModelViewSet):
         return Response({
             "message": "Submitted successfully"
         }, status=200)
+
+
+@api_view(http_method_names=["POST"])
+@permission_classes([permissions.AllowAny])
+def create_thumbnail(request):
+    file = request.FILES.get("file")
+    print(file.content_type)
+    image = Image.open(file)
+    image = image.resize((30, 30))
+    print(image)
+    image.save('temp.jpg')
+    return Response({
+        "message": "Received"
+    }, status=200)
